@@ -20,9 +20,6 @@ class MainActivity : AppCompatActivity() {
         livedataViewmodel()
 
 
-
-
-
     }
 
     private fun livedataViewmodel() {
