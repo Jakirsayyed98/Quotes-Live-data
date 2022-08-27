@@ -12,11 +12,12 @@ import kotlinx.coroutines.launch
 class MainActivity : AppCompatActivity() {
 
     private lateinit var quotesRepositiory: QuotesRepositiory
+    private lateinit var viewmodelLivedata: ViewmodelLivedata
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        directRetrofit()
+    //    directRetrofit()
         livedataViewmodel()
 
 
@@ -25,30 +26,36 @@ class MainActivity : AppCompatActivity() {
     private fun livedataViewmodel() {
         val data= ApisData.retrofitdata().create(MyApiInterface::class.java)
 
-//        val repository = quotesRepositiory(data)
-//
-//        repository = ViewModelProvider(this,QuotesViewmodelFactory(quotesRepositiory)).get(ViewmodelLivedata)
+        val repository = QuotesRepositiory(data)
 
+        viewmodelLivedata = ViewModelProvider(this,QuotesViewmodelFactory(repository)).get(ViewmodelLivedata::class.java)
 
-    }
-
-    private fun directRetrofit() {
-                val data= ApisData.retrofitdata().create(MyApiInterface::class.java)
-
-        GlobalScope.launch {
-            val result = data.getQuets()
-
-            if (result.body()!=null){
-
-                result.body()!!.forEach {
-                    Log.d("NewDataset",it.text)
-                }
-
-
-            }else{
-                print("NewDatasetnull"+result.body())
+        viewmodelLivedata.quotes.observe(this,{
+            it.forEach {
+                Log.d("newddata",it.text)
             }
-        }
+        })
+
 
     }
+
+//    private fun directRetrofit() {
+//                val data= ApisData.retrofitdata().create(MyApiInterface::class.java)
+//
+//        GlobalScope.launch {
+//            val result = data.getQuets()
+//
+//            if (result.body()!=null){
+//
+//                result.body()!!.forEach {
+//                    Log.d("NewDataset",it.text)
+//                }
+//
+//
+//            }else{
+//                print("NewDatasetnull"+result.body())
+//            }
+//        }
+//
+//    }
 }
